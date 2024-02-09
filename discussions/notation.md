@@ -1,0 +1,11 @@
+$\newcommand{\value}{V}$
+$\newcommand{\price}{P}$
+$\newcommand{\float}{\text{float}}$
+$\newcommand{\freq}{\kappa}$
+$\newcommand{\tbond}{\text{fixed}}$
+$\newcommand{\cpn}{c}$
+$\newcommand{\spread}{s}$
+$\newcommand{\swap}{\text{swap}}$
+$\newcommand{\swaprate}{\cpn_{\swap}}$
+$\newcommand{\cashflow}{C}$
+$\newcommand{\notional}{K}$
