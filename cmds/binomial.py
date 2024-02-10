@@ -252,7 +252,7 @@ def estimate_theta(sigmas,quotes_zeros,dt=None,T=None):
             wrapper = lambda theta: incremental_BDT_pricing(subtree, theta, sigmas.iloc[tsteps]).loc[0,0] - quotes_zeros.iloc[tsteps] * 100 / scale
             
             theta.iloc[tsteps] = fsolve(wrapper,.5)[0]
-            ratetree.iloc[:,tsteps] = incrementBDTtree(subtree, theta.iloc[tsteps], sigmas.iloc[tsteps]).iloc[:,tsteps]
+            ratetree.iloc[:tsteps+1,tsteps] = incrementBDTtree(subtree, theta.iloc[tsteps], sigmas.iloc[tsteps]).iloc[:,tsteps]
             
             #print(f'Completed: {tsteps/len(quotes_zeros.index):.1%}')
             
@@ -277,13 +277,13 @@ def construct_bond_cftree(T, compound, cpn, cpn_freq=2, face=100):
 
 
 
-def construct_accinttree_old(cftree, compound, cpn, cpn_freq=2, face=100, cleancall=True):
-    accinttree = cftree.copy()
-    step = int(compound/cpn_freq)
-    if cleancall is True:
-        accinttree.iloc[:,-1::-step] = face * (cpn/compound)
+# def construct_accinttree_old(cftree, compound, cpn, cpn_freq=2, face=100, cleancall=True):
+#     accinttree = cftree.copy()
+#     step = int(compound/cpn_freq)
+#     if cleancall is True:
+#         accinttree.iloc[:,-1::-step] = face * (cpn/compound)
         
-    return accinttree
+#     return accinttree
 
 
 def construct_accint(timenodes, freq, cpn, cpn_freq=2, face=100):
