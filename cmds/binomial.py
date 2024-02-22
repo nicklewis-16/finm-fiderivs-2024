@@ -17,7 +17,6 @@ def format_bintree(df, style='{:.2f}'):
     """
     return df.style.format(style, na_rep='').format_index('{:.2f}', axis=1)
 
-
 def construct_rate_tree(dt,T):
     """
     Constructs a rate tree based on the given time step and time horizon.
