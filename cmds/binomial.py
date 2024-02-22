@@ -7,7 +7,6 @@ from treasury_cmds import compound_rate
 def format_bintree(df,style='{:.2f}'):
     return df.style.format(style,na_rep='').format_index('{:.2f}',axis=1)
 
-
 def construct_rate_tree(dt,T):
     timegrid = pd.Series((np.arange(0,round(T/dt)+1)*dt).round(6),name='time',index=pd.Index(range(round(T/dt)+1),name='state'))
     tree = pd.DataFrame(dtype=float,columns=timegrid,index=timegrid.index)
