@@ -5,6 +5,20 @@ from scipy.stats import norm
 
 
 def cap_vol_to_price(flatvol, strike, fwds, discounts, dt=.25, notional=100):
+    """
+    Calculates the price of a cap option based on flat volatility.
+
+    Parameters:
+    - flatvol (float): Flat volatility value.
+    - strike (float): Strike price of the cap option.
+    - fwds (pd.Series): Series of forward rates.
+    - discounts (pd.Series): Series of discount factors.
+    - dt (float, optional): Time increment. Default is 0.25.
+    - notional (float, optional): Notional amount. Default is 100.
+
+    Returns:
+    - capvalue (float): Price of the cap option.
+    """
     T = discounts.index[-1]
     flatvalues = pd.Series(dtype=float, index=discounts.index, name='flat values')
     
@@ -20,6 +34,20 @@ def cap_vol_to_price(flatvol, strike, fwds, discounts, dt=.25, notional=100):
 
 
 def cap_vol_to_price_rev(flatvol, strike, fwds, discounts, dt=.25, notional=100):
+    """
+    Calculates the price of a cap using flat volatility.
+
+    Parameters:
+    flatvol (float): The flat volatility value.
+    strike (float): The strike price of the cap.
+    fwds (pd.Series): The forward rates.
+    discounts (pd.Series): The discount factors.
+    dt (float, optional): The time step size. Defaults to 0.25.
+    notional (float, optional): The notional amount. Defaults to 100.
+
+    Returns:
+    float: The price of the cap.
+    """
     T = discounts.index[-1]
     flatvalues = pd.Series(dtype=float, index=discounts.index, name='flat values')
     
@@ -35,6 +63,20 @@ def cap_vol_to_price_rev(flatvol, strike, fwds, discounts, dt=.25, notional=100)
 
 
 def blacks_formula(T,vol,strike,fwd,discount=1,isCall=True):
+    """
+    Calculates the value of an option using Black's formula.
+
+    Parameters:
+    - T (float): Time to expiration in years.
+    - vol (float): Volatility of the underlying asset.
+    - strike (float): Strike price of the option.
+    - fwd (float): Forward price of the underlying asset.
+    - discount (float, optional): Discount factor. Default is 1.
+    - isCall (bool, optional): True if the option is a call option, False if it is a put option. Default is True.
+
+    Returns:
+    - val (float): Value of the option.
+    """
         
     sigT = vol * np.sqrt(T)
     d1 = (1/sigT) * np.log(fwd/strike) + .5*sigT
@@ -51,50 +93,78 @@ def blacks_formula(T,vol,strike,fwd,discount=1,isCall=True):
 
 
 def price_caplet(T_rateset,vol,strike,fwd,discount,freq=4,notional=100):
+    """
+    Calculates the price of a caplet using Black's formula.
+
+    Parameters:
+    - T_rateset (float): Time to the rateset in years.
+    - vol (float): Volatility of the underlying rate.
+    - strike (float): Strike rate of the caplet.
+    - fwd (float): Forward rate.
+    - discount (float): Discount factor.
+    - freq (int, optional): Frequency of compounding per year. Defaults to 4.
+    - notional (float, optional): Notional amount. Defaults to 100.
+
+    Returns:
+    - price (float): Price of the caplet.
+    """
     dt = 1/freq
     price = notional * dt * blacks_formula(T_rateset, vol, strike, fwd, discount)
     return price
 
 
+def flat_to_forward_vol_rev(flatvols, strikes, fwds, discounts, freq=None, notional=100, returnCaplets=False):
+    """
+    Converts flat volatilities to forward volatilities using cap pricing.
 
+    Args:
+        flatvols (pd.Series): Series of flat volatilities.
+        strikes (pd.Series): Series of strikes.
+        fwds (pd.Series): Series of forward rates.
+        discounts (pd.Series): Series of discount factors.
+        freq (int, optional): Frequency of the time grid. Defaults to None.
+        notional (float, optional): Notional amount. Defaults to 100.
+        returnCaplets (bool, optional): Flag indicating whether to return caplets. Defaults to False.
 
-def flat_to_forward_vol_rev(flatvols,strikes,fwds, discounts, freq=None, notional=100, returnCaplets=False):
-#TODO: allow for timegrid to differ from cap timing
-    if freq!=4:
+    Returns:
+        pd.DataFrame or tuple: DataFrame containing forward volatilities and cap prices. If returnCaplets is True, also returns a DataFrame of caplets.
+    """
+    # TODO: allow for timegrid to differ from cap timing
+    if freq != 4:
         display('Warning: freq parameter controls timegrid and cap timing.')
         
-    dt = 1/freq
+    dt = 1 / freq
     
-    out = pd.DataFrame(dtype=float, index=flatvols.index, columns=['fwd vols','cap prices'])
+    out = pd.DataFrame(dtype=float, index=flatvols.index, columns=['fwd vols', 'cap prices'])
     caplets = pd.DataFrame(dtype=float, index=flatvols.index, columns=strikes.values)
 
-    first_cap = flatvols.index.get_loc(2*dt)
+    first_cap = flatvols.index.get_loc(2 * dt)
 
     for step, t in enumerate(flatvols.index):
         if step < first_cap:
-            out.loc[t,'cap prices'] = np.nan
-            out.loc[t,'fwd vols'] = np.nan
+            out.loc[t, 'cap prices'] = np.nan
+            out.loc[t, 'fwd vols'] = np.nan
             tprev = t
         else:
-            out.loc[t,'cap prices'] = cap_vol_to_price(flatvols.loc[t], strikes.loc[t], fwds.loc[:t], discounts.loc[:t], dt=dt, notional=notional)
-            if step==first_cap:
-                out.loc[t,'fwd vols'] = flatvols.loc[t]
-                caplets.loc[t,strikes.loc[t]] = out.loc[t,'cap prices']
+            out.loc[t, 'cap prices'] = cap_vol_to_price(flatvols.loc[t], strikes.loc[t], fwds.loc[:t], discounts.loc[:t], dt=dt, notional=notional)
+            if step == first_cap:
+                out.loc[t, 'fwd vols'] = flatvols.loc[t]
+                caplets.loc[t, strikes.loc[t]] = out.loc[t, 'cap prices']
                 tprev = t
             else:
                 strikeT = strikes.loc[t]
 
                 for j in flatvols.index[first_cap:step]:
-                    caplets.loc[j,strikeT] = price_caplet(j-dt, out.loc[j,'fwd vols'], strikeT, fwds.loc[j], discounts.loc[j],freq=freq, notional=notional)
+                    caplets.loc[j, strikeT] = price_caplet(j - dt, out.loc[j, 'fwd vols'], strikeT, fwds.loc[j], discounts.loc[j], freq=freq, notional=notional)
 
-                caplets.loc[t,strikeT] = out.loc[t,'cap prices'] - caplets.loc[:tprev,strikeT].sum()
+                caplets.loc[t, strikeT] = out.loc[t, 'cap prices'] - caplets.loc[:tprev, strikeT].sum()
 
-                wrapper = lambda vol: caplets.loc[t,strikeT] - price_caplet(tprev, vol, strikeT, fwds.loc[t], discounts.loc[t],freq=freq, notional=notional)
+                wrapper = lambda vol: caplets.loc[t, strikeT] - price_caplet(tprev, vol, strikeT, fwds.loc[t], discounts.loc[t], freq=freq, notional=notional)
 
-                out.loc[t,'fwd vols'] =  fsolve(wrapper,out.loc[tprev,'fwd vols'])[0]            
+                out.loc[t, 'fwd vols'] = fsolve(wrapper, out.loc[tprev, 'fwd vols'])[0]            
                 tprev = t            
 
-    out.insert(0,'flat vols',flatvols)
+    out.insert(0, 'flat vols', flatvols)
     
     if returnCaplets:
         return out, caplets
@@ -104,7 +174,18 @@ def flat_to_forward_vol_rev(flatvols,strikes,fwds, discounts, freq=None, notiona
     
 
 def flat_to_forward_vol(curves, freq=None, notional=100):
-    
+    """
+    Converts flat volatility to forward volatility using caplet prices and Black's formula.
+
+    Args:
+        curves (DataFrame): The input DataFrame containing the necessary curves data.
+        freq (int, optional): The frequency of the caplets. Defaults to None.
+        notional (float, optional): The notional amount. Defaults to 100.
+
+    Returns:
+        DataFrame: The DataFrame containing the forward volatilities.
+
+    """
     dt = curves.index[1] - curves.index[0]
     if freq is None:
         freq = int(1/dt)
@@ -128,10 +209,17 @@ def flat_to_forward_vol(curves, freq=None, notional=100):
 
 
 
-
-
 def shiftrates_fwdvols(dr,curves):
+    """
+    Calculates the shifted forward volatilities and discounts based on the given shift rate and curves.
 
+    Parameters:
+    dr (float): The shift rate to be applied to the swap rates.
+    curves (DataFrame): The input curves containing swap rates.
+
+    Returns:
+    DataFrame: The shifted forward volatilities and discounts.
+    """
     curves_mod = curves.copy()
     curves_mod['swap rates'] = curves['swap rates'] + dr
     

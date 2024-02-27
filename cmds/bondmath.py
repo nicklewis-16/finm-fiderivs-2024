@@ -11,7 +11,20 @@ import numpy as np
 import pandas as pd
 
 
-def bond_pricer_formula(ttm,ytm,cpn=None,freq=2,face=100):
+def bond_pricer_formula(ttm, ytm, cpn=None, freq=2, face=100):
+    """
+    Calculate the present value of a bond using the bond pricing formula.
+
+    Parameters:
+    ttm (float): Time to maturity in years.
+    ytm (float): Yield to maturity as a decimal.
+    cpn (float, optional): Coupon rate as a decimal. If not provided, it is assumed to be equal to the yield to maturity.
+    freq (int, optional): Coupon payment frequency per year. Default is 2.
+    face (float, optional): Face value of the bond. Default is 100.
+
+    Returns:
+    float: Present value of the bond.
+    """
     
     if cpn is None:
         cpn = ytm
@@ -32,8 +45,21 @@ def bond_pricer_formula(ttm,ytm,cpn=None,freq=2,face=100):
     
     
 
-def bond_pricer_dcf(ttm,ytm,cpn=None,freq=2,face=100):
-    
+def bond_pricer_dcf(ttm, ytm, cpn=None, freq=2, face=100):
+    """
+    Calculate the present value of a bond using the Discounted Cash Flow (DCF) method.
+
+    Parameters:
+    ttm (float): Time to maturity of the bond in years.
+    ytm (float): Yield to maturity of the bond as a decimal.
+    cpn (float, optional): Coupon rate of the bond as a decimal. If not provided, it defaults to the yield to maturity.
+    freq (int, optional): Number of coupon payments per year. Defaults to 2.
+    face (float, optional): Face value of the bond. Defaults to 100.
+
+    Returns:
+    float: Present value of the bond.
+
+    """
     if cpn is None:
         cpn = ytm
         
@@ -53,7 +79,18 @@ def bond_pricer_dcf(ttm,ytm,cpn=None,freq=2,face=100):
     
 
 def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
+    """
+    Calculates the duration of a bond using the closed-formula method.
 
+    Parameters:
+    - tau (float): Time to maturity of the bond in years.
+    - ytm (float): Yield to maturity of the bond.
+    - cpnrate (float, optional): Coupon rate of the bond. If not provided, it is assumed to be equal to the yield to maturity.
+    - freq (int, optional): Number of coupon payments per year. Default is 2.
+
+    Returns:
+    - duration (float): Duration of the bond.
+    """
     if cpnrate is None:
         cpnrate = ytm
         
