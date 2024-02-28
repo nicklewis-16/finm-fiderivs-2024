@@ -3330,7 +3330,7 @@ def sabr_volpaths(LOADFILE, idSHEET, ISCALL, BETA, TARG_T, doSLIM=False):
 
 ## SELF CREATED FUNCTIONS: 
 
-def calculate_black_quotes(expiries, tenors, volATM, strikeATM, fwdswap, discount, isPayer):
+def calculate_black_quotes(curves, freqcurve, freqswap, expiries, tenors, volATM, strikeATM, fwdswap, discount, isPayer, N = 100):
     """
     Calculate the Black's formula prices for a set of swaptions.
     
