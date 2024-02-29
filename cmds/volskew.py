@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+from scipy.stats import norm
 from scipy.optimize import fsolve
 from scipy.optimize import minimize
 
@@ -389,3 +390,24 @@ def sabr_volpaths(LOADFILE, idSHEET, ISCALL, BETA, TARG_T, doSLIM=False):
     output['params'] = paramtab
     
     return output        
+
+
+
+
+
+
+
+
+def bs_delta_to_strike(under,delta,sigma,T,isCall=True,r=0):
+    
+    if isCall:
+        phi = 1
+    else:
+        phi = -1
+        if delta > 0:
+            delta *= -1
+        
+    strike = under * np.exp(-phi * norm.ppf(phi*delta) * sigma * np.sqrt(T) + .5*sigma**2*T)
+    
+    return strike
+    
