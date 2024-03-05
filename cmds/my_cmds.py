@@ -33,7 +33,6 @@ def semi_bootstrap(params,maturity, n_compound):
 
     return rate
 
-
 def bday(date):
     """
     Check if a given date is a business day in the US.
@@ -99,8 +98,6 @@ def get_coupon_dates(quote_date, maturity_date):
     out = temp[0]
     return out
 
-
-
 def make_figure_number_issues_paying(CFmatrix):
     """
     Creates a figure showing the number of treasury issues with coupon or principal payment over time.
@@ -132,8 +129,6 @@ def make_figure_number_issues_paying(CFmatrix):
     plt.title('Number of Treasuries Paying')
 
     plt.show()
-
-
 
 def filter_treasuries(data, t_date=None, filter_maturity=None, filter_maturity_min=None, drop_duplicate_maturities=False, filter_tips=True, filter_yld=True):
     """
@@ -179,8 +174,6 @@ def filter_treasuries(data, t_date=None, filter_maturity=None, filter_maturity_m
         
     return outdata
 
-
-
 def calc_cashflows(quote_data, filter_maturity_dates=False):
     """
     Calculate cashflows based on quote data.
@@ -210,7 +203,6 @@ def calc_cashflows(quote_data, filter_maturity_dates=False):
         CF = filter_treasury_cashflows(CF, filter_maturity_dates=True)
         
     return CF
-
 
 def check_dates(df):
     t_check = df['CALDT'].values[0]
@@ -292,8 +284,6 @@ def filter_treasury_cashflows(CF, filter_maturity_dates=False, filter_benchmark_
     
     return CF_filtered
 
-
-
 def get_maturity_delta(t_maturity, t_current):
     """
     Calculates the maturity delta in years between the given maturity date and the current date.
@@ -308,8 +298,6 @@ def get_maturity_delta(t_maturity, t_current):
     maturity_delta = (t_maturity - t_current) / pd.Timedelta('365.25 days')
     
     return maturity_delta
-
-
 
 def discount_to_intrate(discount, maturity, n_compound=None):
     """
@@ -333,9 +321,6 @@ def discount_to_intrate(discount, maturity, n_compound=None):
         
     return intrate
 
-
-
-
 def intrate_to_discount(intrate, maturity, n_compound=None):
     """
     Calculates the discount factor given an interest rate and maturity.
@@ -356,8 +341,6 @@ def intrate_to_discount(intrate, maturity, n_compound=None):
         discount = 1 / (1+(intrate / n_compound))**(n_compound * maturity)
 
     return discount
-
-
 
 def compound_rate(intrate, compound_input, compound_output):
     """
@@ -381,12 +364,6 @@ def compound_rate(intrate, compound_input, compound_output):
 
     return outrate
 
-
-
-
-
-
-
 def bootstrap(params, maturity):
     """
     Calculates the interpolated interest rate for a given maturity using the bootstrap method.
@@ -408,8 +385,6 @@ def bootstrap(params, maturity):
 
     return rate
 
-
-
 def nelson_siegel(params, maturity):
     """
     Calculates the Nelson-Siegel interest rate based on the given parameters and maturity.
@@ -425,10 +400,6 @@ def nelson_siegel(params, maturity):
     
     return rate
 
-
-
-
-
 def nelson_siegel_extended(params, maturity):
     """
     Calculates the Nelson-Siegel Extended rate for a given set of parameters and maturity.
@@ -443,9 +414,6 @@ def nelson_siegel_extended(params, maturity):
     rate = params[0] + (params[1] + params[2]) * (1 - np.exp(-maturity/params[3]))/(maturity/params[3]) - params[2] * np.exp(-maturity/params[3]) + params[4] *((1-np.exp(-maturity/params[5]))/(maturity/params[5]) - np.exp(-maturity/params[5]))
     
     return rate
-
-
-
 
 def estimate_curve_ols(CF, prices, interpolate=False):
     """
@@ -482,9 +450,6 @@ def estimate_curve_ols(CF, prices, interpolate=False):
 
     return discounts
 
-
-
-
 def price_with_rate_model(params, CF, t_current, fun_model, convert_to_discount=True, price_coupons=False):
     """
     Calculates the price of a fixed income security using a rate model.
@@ -518,9 +483,6 @@ def price_with_rate_model(params, CF, t_current, fun_model, convert_to_discount=
     
     return price
 
-
-
-
 def pricing_errors(params, CF, t_current, fun_model, observed_prices):
     """
     Calculates the pricing errors between the observed prices and the modeled prices.
@@ -543,7 +505,6 @@ def pricing_errors(params, CF, t_current, fun_model, observed_prices):
     error = sum((observed_prices - price_modeled) ** 2)
 
     return error
-
 
 def estimate_rate_curve(model, CF, t_current, prices, x0=None):
     """
@@ -579,8 +540,6 @@ def estimate_rate_curve(model, CF, t_current, prices, x0=None):
         params_optimized = mod.x
 
     return params_optimized
-
-
 
 def extract_spot_curves(quote_date, filepath=None, model=nelson_siegel, delta_maturity = .25, T=30,calc_forward=False, delta_forward_multiple = 1, filter_maturity_dates=False, filter_tips=True):
     """
@@ -663,8 +622,6 @@ def extract_spot_curves(quote_date, filepath=None, model=nelson_siegel, delta_ma
         
     return curves
 
-
-
 def process_treasury_quotes(filepath):
     """
     Processes treasury quotes data and returns relevant metrics.
@@ -707,7 +664,6 @@ def process_treasury_quotes(filepath):
     metrics['next cashflow'] = (calc_cashflows(rawdata)!=0).idxmax(1)
     return rawdata, metrics
 
-
 def get_bond(quote_date, maturity=None, coupon=None, selection='nearest'):
     """
     Retrieves bond metrics based on the specified criteria.
@@ -747,7 +703,6 @@ def get_bond(quote_date, maturity=None, coupon=None, selection='nearest'):
 
     return metrics
 
-
 def get_bond_raw(quote_date):
     """
     Retrieves raw bond data from an Excel file for a given quote date.
@@ -775,7 +730,6 @@ def get_bond_raw(quote_date):
         
     return rawdata, t_current
 
-
 def forward_discount(spot_discount, T1, T2):
     """
     Calculates the forward discount factor between two time periods.
@@ -789,7 +743,6 @@ def forward_discount(spot_discount, T1, T2):
     float: The forward discount factor between T1 and T2.
     """
     return spot_discount.loc[T2] / spot_discount.loc[T1]
-
 
 def calc_npv(rate=0, cashflows=0, maturities=0, price=0):
     """
@@ -811,7 +764,6 @@ def calc_npv(rate=0, cashflows=0, maturities=0, price=0):
 
     return val
 
-
 def pv(rate, cashflows, maturities, freq=1):
     """
     Calculates the present value of a series of cashflows.
@@ -827,7 +779,6 @@ def pv(rate, cashflows, maturities, freq=1):
     """
     price = sum([cfi / (1 + rate / freq) ** (maturities[i] * freq) for i, cfi in enumerate(cashflows)])
     return price
-
 
 def next_business_day(DATE):
     """
@@ -846,7 +797,6 @@ def next_business_day(DATE):
     while next_day.weekday() in holidays.WEEKEND or next_day in HOLIDAYS_US:
         next_day += ONE_DAY
     return next_day
-
 
 def price_treasury_ytm(time_to_maturity, ytm, cpn_rate, freq=2, face=100):
     """
@@ -875,8 +825,6 @@ def price_treasury_ytm(time_to_maturity, ytm, cpn_rate, freq=2, face=100):
     pv *= face
     
     return pv
-
-
 
 def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
     """
@@ -908,7 +856,6 @@ def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
     
     return duration
 
-
 def get_spread_bps(database):
     """
     Calculate the spread in basis points (bps) for each treasury bond in the database.
@@ -925,8 +872,6 @@ def get_spread_bps(database):
     spread = -ylds.sub(ylds.iloc[:,0],axis=0)
     
     return spread
-
-
 
 def get_key_info(info):
     """
@@ -948,8 +893,6 @@ def get_key_info(info):
     key_info.loc['type',key_info.loc['type']==12] = 'TIPS note'
     key_info.columns = key_info.loc['issue date']
     return key_info
-
-
 
 def get_snapshot(database, date):
     """
@@ -979,8 +922,6 @@ def get_snapshot(database, date):
 
     return metrics
 
-
-
 def get_table(info, database, date):
     """
     Retrieves a table by merging key information and metrics based on the given parameters.
@@ -1002,7 +943,6 @@ def get_table(info, database, date):
     table.drop('kytreasno', inplace=True)
 
     return table
-
 
 def pnl_spread_trade(spread_convergence, modified_duration, price, contracts):    
     """
@@ -1114,7 +1054,6 @@ def trade_evolution(date0, date_maturity, n_weeks, balsheet, price_ts, duration_
 
     return pnl, fmt_dict
 
-
 def bootstrap_spot_rates(df):
     """
     Bootstraps spot rates from a dataframe of bond information.
@@ -1154,8 +1093,6 @@ def bootstrap_spot_rates(df):
 
     return pd.Series(spot_rates)
 
-
-
 # BINOMIAL FUNCS:
 
 def format_bintree(df, style='{:.2f}'):
@@ -1185,8 +1122,6 @@ def construct_rate_tree(dt,T):
     timegrid = pd.Series((np.arange(0,round(T/dt)+1)*dt).round(6),name='time',index=pd.Index(range(round(T/dt)+1),name='state'))
     tree = pd.DataFrame(dtype=float,columns=timegrid,index=timegrid.index)
     return tree
-
-
 
 def construct_quotes(maturities, prices):
     """
@@ -1241,7 +1176,6 @@ def payoff_swap(r, swaprate, freqswap, ispayer=True, N=100):
 
     return payoff
 
-
 def replicating_port(quotes, undertree, derivtree, dt=None, Ncash=100):
     """
     Calculates the replicating portfolio for a derivative given the quotes, undertree, and derivtree.
@@ -1266,7 +1200,6 @@ def replicating_port(quotes, undertree, derivtree, dt=None, Ncash=100):
     out = pd.DataFrame({'positions': [cash, delta], 'value': quotes}, index=['cash', 'under'])
     out.loc['derivative', 'value'] = out['positions'] @ out['value']
     return out
-
 
 def bintree_pricing_old(payoff=None, ratetree=None, undertree=None, cftree=None, pstars=None, timing=None, style='european'):
     """
@@ -1320,8 +1253,6 @@ def bintree_pricing_old(payoff=None, ratetree=None, undertree=None, cftree=None,
                                                  cftree.loc[:, t])
 
     return valuetree
-
-
 
 def bintree_pricing(payoff=None, ratetree=None, undertree=None, cftree=None, dt=None, pstars=None, timing=None, cfdelay=False, style='european', Tamerican=0):
     """
@@ -1389,7 +1320,6 @@ def bintree_pricing(payoff=None, ratetree=None, undertree=None, cftree=None, dt=
         
     return valuetree
 
-
 def bond_price_error(quote, pstars, ratetree, style='european'):
     """
     Calculates the error between the model price and the given quote for a bond.
@@ -1410,7 +1340,6 @@ def bond_price_error(quote, pstars, ratetree, style='european'):
     error = modelprice - quote
 
     return error
-
 
 def estimate_pstar(quotes,ratetree,style='european'):
     """
@@ -1438,8 +1367,6 @@ def estimate_pstar(quotes,ratetree,style='european'):
 
     return pstars
 
-
-
 def exercise_decisions(payoff, undertree, derivtree):
     """
     Determines the exercise decisions for a derivative based on the payoff function, the underlying tree, and the derivative tree.
@@ -1454,7 +1381,6 @@ def exercise_decisions(payoff, undertree, derivtree):
     """
     exer = (derivtree == payoff(undertree)) & (derivtree > 0)
     return exer
-
 
 def rates_to_BDTstates(ratetree):
     """
@@ -1481,7 +1407,6 @@ def BDTstates_to_rates(ztree):
     """
     ratetree = np.exp(ztree)/100
     return ratetree
-
 
 def incrementBDTtree(ratetree, theta, sigma, dt=None):
     """
@@ -1531,7 +1456,6 @@ def incremental_BDT_pricing(tree, theta, sigma_new, dt=None):
         model_price = bintree_pricing(payoff, newtree)
         return model_price
 
-
 def estimate_theta(sigmas, quotes_zeros, dt=None, T=None):
     """
     Estimates the theta values for a given set of sigmas and zero quotes.
@@ -1578,7 +1502,6 @@ def estimate_theta(sigmas, quotes_zeros, dt=None, T=None):
             
     return theta, ratetree
 
-
 def construct_bond_cftree(T, compound, cpn, cpn_freq=2, face=100):
     """
     Constructs a cashflow tree for a bond.
@@ -1605,17 +1528,6 @@ def construct_bond_cftree(T, compound, cpn, cpn_freq=2, face=100):
     
     return cftree
 
-
-
-# def construct_accinttree_old(cftree, compound, cpn, cpn_freq=2, face=100, cleancall=True):
-#     accinttree = cftree.copy()
-#     step = int(compound/cpn_freq)
-#     if cleancall is True:
-#         accinttree.iloc[:,-1::-step] = face * (cpn/compound)
-        
-#     return accinttree
-
-
 def construct_accint(timenodes, freq, cpn, cpn_freq=2, face=100):
     """
     Constructs an accrued interest schedule based on the given parameters.
@@ -1641,8 +1553,6 @@ def construct_accint(timenodes, freq, cpn, cpn_freq=2, face=100):
     accint = pd.Series(temp,index=timenodes)
 
     return accint
-
-
 
 def idx_payoff_periods(series_periods, freq_payoffs, freq_periods=None):
     """
@@ -1699,8 +1609,6 @@ def construct_swap_cftree(ratetree, swaprate, freqswap=1, T=None, freq=None, isp
     
     return cftree, refratetree
 
-
-
 def price_callable(quotes, fwdvols, cftree, accint, wrapper_bond, payoff_call, cleanstrike=True):
     """
     Calculates the price of a callable bond using a binomial tree model.
@@ -1730,9 +1638,6 @@ def price_callable(quotes, fwdvols, cftree, accint, wrapper_bond, payoff_call, c
     model_price_dirty = callablebondtree.loc[0, 0]
 
     return model_price_dirty
-
-
-
 
 def BDTtree(thetas, sigmas, r0=None, px_bond0=None, dt=None, T=None):
     """
@@ -1770,7 +1675,6 @@ def BDTtree(thetas, sigmas, r0=None, px_bond0=None, dt=None, T=None):
     bdttree = BDTstates_to_rates(ztree)
 
     return bdttree
-
 
 def align_days_interval_to_tree_periods(days, freq):
     """
@@ -1821,9 +1725,6 @@ def bond_pricer_formula(ttm, ytm, cpn=None, freq=2, face=100):
     
     return pv
     
-    
-    
-
 def bond_pricer_dcf(ttm, ytm, cpn=None, freq=2, face=100):
     """
     Calculate the present value of a bond using the Discounted Cash Flow (DCF) method.
@@ -1854,9 +1755,6 @@ def bond_pricer_dcf(ttm, ytm, cpn=None, freq=2, face=100):
 
     return pv
     
-    
-    
-
 def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
     """
     Calculates the duration of a bond using the closed-formula method.
@@ -1887,8 +1785,6 @@ def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
     
     return duration
     
-    
-
 def bootstrap_discounts_clean(df, compounding=2,key=None):
     """
     Bootstraps spot discount curve--assuming clean, EVENLY spaced term structure without missing values.
@@ -1928,23 +1824,22 @@ def bootstrap_discounts_clean(df, compounding=2,key=None):
 
     return pd.DataFrame({'spot rates': spot_rates})
 
-
 # FICCVOL FUNCS:
 
 def cap_vol_to_price(flatvol, strike, fwds, discounts, dt=.25, notional=100):
     """
-    Calculates the price of a cap option based on flat volatility.
+    Calculates the price of a cap option based on the given parameters.
 
     Parameters:
-    - flatvol (float): Flat volatility value.
-    - strike (float): Strike price of the cap option.
-    - fwds (pd.Series): Series of forward rates.
-    - discounts (pd.Series): Series of discount factors.
-    - dt (float, optional): Time increment. Default is 0.25.
-    - notional (float, optional): Notional amount. Default is 100.
+    - flatvol (float): The flat volatility used in the Black's formula.
+    - strike (float): The strike price of the cap option.
+    - fwds (pd.Series): A pandas Series containing the forward rates.
+    - discounts (pd.Series): A pandas Series containing the discount factors.
+    - dt (float, optional): The time step used in the calculation. Defaults to 0.25.
+    - notional (float, optional): The notional amount of the cap option. Defaults to 100.
 
     Returns:
-    - capvalue (float): Price of the cap option.
+    - capvalue (float): The price of the cap option.
     """
     T = discounts.index[-1]
     flatvalues = pd.Series(dtype=float, index=discounts.index, name='flat values')
@@ -1957,23 +1852,21 @@ def cap_vol_to_price(flatvol, strike, fwds, discounts, dt=.25, notional=100):
     capvalue = flatvalues.sum()        
     return capvalue
 
-
-
-
 def cap_vol_to_price_rev(flatvol, strike, fwds, discounts, dt=.25, notional=100):
     """
     Calculates the price of a cap using flat volatility.
 
-    Parameters:
-    flatvol (float): The flat volatility value.
-    strike (float): The strike price of the cap.
-    fwds (pd.Series): The forward rates.
-    discounts (pd.Series): The discount factors.
-    dt (float, optional): The time step size. Defaults to 0.25.
-    notional (float, optional): The notional amount. Defaults to 100.
+    Args:
+        flatvol (float): The flat volatility value.
+        strike (float): The strike price of the cap.
+        fwds (pd.Series): A pandas Series containing forward rates.
+        discounts (pd.Series): A pandas Series containing discount factors.
+        dt (float, optional): The time step size. Defaults to 0.25.
+        notional (float, optional): The notional amount. Defaults to 100.
 
     Returns:
-    float: The price of the cap.
+        float: The price of the cap.
+
     """
     T = discounts.index[-1]
     flatvalues = pd.Series(dtype=float, index=discounts.index, name='flat values')
@@ -1986,10 +1879,7 @@ def cap_vol_to_price_rev(flatvol, strike, fwds, discounts, dt=.25, notional=100)
     capvalue = flatvalues.sum()        
     return capvalue
 
-
-
-
-def blacks_formula(T,vol,strike,fwd,discount=1,isCall=True):
+def blacks_formula(T, vol, strike, fwd, discount=1, isCall=True):
     """
     Calculates the value of an option using Black's formula.
 
@@ -1999,62 +1889,87 @@ def blacks_formula(T,vol,strike,fwd,discount=1,isCall=True):
     - strike (float): Strike price of the option.
     - fwd (float): Forward price of the underlying asset.
     - discount (float, optional): Discount factor. Default is 1.
-    - isCall (bool, optional): True if the option is a call option, False if it is a put option. Default is True.
+    - isCall (bool, optional): True if the option is a call option, False if it's a put option. Default is True.
 
     Returns:
     - val (float): Value of the option.
+
     """
-        
     sigT = vol * np.sqrt(T)
     d1 = (1/sigT) * np.log(fwd/strike) + .5*sigT
-    d2 = d1-sigT
+    d2 = d1 - sigT
     
     if isCall:
         val = discount * (fwd * norm.cdf(d1) - strike * norm.cdf(d2))
     else:
         val = discount * (strike * norm.cdf(-d2) - fwd * norm.cdf(-d1))
+    
     return val
 
-
-
-
-
-def price_caplet(T_rateset,vol,strike,fwd,discount,freq=4,notional=100):
+def price_caplet(T_rateset, vol, strike, fwd, discount, freq=4, notional=100):
     """
-    Calculates the price of a caplet using Black's formula.
+    Calculate the price of a caplet.
 
-    Parameters:
-    - T_rateset (float): Time to the rateset in years.
-    - vol (float): Volatility of the underlying rate.
-    - strike (float): Strike rate of the caplet.
-    - fwd (float): Forward rate.
-    - discount (float): Discount factor.
-    - freq (int, optional): Frequency of compounding per year. Defaults to 4.
-    - notional (float, optional): Notional amount. Defaults to 100.
+    Args:
+        T_rateset (float): The time to the rateset in years.
+        vol (float): The volatility of the underlying rate.
+        strike (float): The strike rate.
+        fwd (float): The forward rate.
+        discount (float): The discount factor.
+        freq (int, optional): The compounding frequency per year. Defaults to 4.
+        notional (float, optional): The notional amount. Defaults to 100.
 
     Returns:
-    - price (float): Price of the caplet.
+        float: The price of the caplet.
     """
-    dt = 1/freq
+    dt = 1 / freq
     price = notional * dt * blacks_formula(T_rateset, vol, strike, fwd, discount)
     return price
 
+# wrapper for better version of the function
+def flat_to_forward_vol(curves, freq=None, notional=100):
+    """
+    Converts flat volatilities to forward volatilities.
 
+    Parameters:
+    - curves (dict): A dictionary containing the following curves:
+        - 'flat vols' (list): List of flat volatilities.
+        - 'swap rates' (list): List of swap rates.
+        - 'forwards' (list): List of forward rates.
+        - 'discounts' (list): List of discount factors.
+    - freq (int): Frequency of the forward rates. Default is None.
+    - notional (float): Notional value. Default is 100.
+
+    Returns:
+    - capcurves (list): List of forward volatilities.
+
+    """
+    capcurves = flat_to_forward_vol_rev(
+        curves['flat vols'],
+        curves['swap rates'],
+        curves['forwards'],
+        curves['discounts'],
+        freq=4,
+        returnCaplets=False)
+
+    return capcurves
+    
 def flat_to_forward_vol_rev(flatvols, strikes, fwds, discounts, freq=None, notional=100, returnCaplets=False):
     """
-    Converts flat volatilities to forward volatilities using cap pricing.
+    Convert flat volatilities to forward volatilities and calculate cap prices.
 
     Args:
         flatvols (pd.Series): Series of flat volatilities.
-        strikes (pd.Series): Series of strikes.
+        strikes (pd.Series): Series of strike values.
         fwds (pd.Series): Series of forward rates.
         discounts (pd.Series): Series of discount factors.
         freq (int, optional): Frequency of the time grid. Defaults to None.
-        notional (float, optional): Notional amount. Defaults to 100.
+        notional (float, optional): Notional value. Defaults to 100.
         returnCaplets (bool, optional): Flag indicating whether to return caplets. Defaults to False.
 
     Returns:
-        pd.DataFrame or tuple: DataFrame containing forward volatilities and cap prices. If returnCaplets is True, also returns a DataFrame of caplets.
+        pd.DataFrame or tuple: If returnCaplets is False, returns a DataFrame with columns 'flat vols', 'fwd vols', and 'cap prices'.
+        If returnCaplets is True, returns a tuple containing the DataFrame and a DataFrame of caplet prices.
     """
     # TODO: allow for timegrid to differ from cap timing
     if freq != 4:
@@ -2098,55 +2013,18 @@ def flat_to_forward_vol_rev(flatvols, strikes, fwds, discounts, freq=None, notio
     else:
         return out
     
-    
-
-def flat_to_forward_vol(curves, freq=None, notional=100):
+def shiftrates_fwdvols(dr, curves):
     """
-    Converts flat volatility to forward volatility using caplet prices and Black's formula.
-
-    Args:
-        curves (DataFrame): The input DataFrame containing the necessary curves data.
-        freq (int, optional): The frequency of the caplets. Defaults to None.
-        notional (float, optional): The notional amount. Defaults to 100.
-
-    Returns:
-        DataFrame: The DataFrame containing the forward volatilities.
-
-    """
-    dt = curves.index[1] - curves.index[0]
-    if freq is None:
-        freq = int(1/dt)
-   
-    capcurves = curves[['flat vols']].copy()
-
-    for tstep, t in enumerate(capcurves.index):
-    
-        if tstep == 0:
-            capcurves.loc[t,'caplet prices'] = np.nan
-            capcurves.loc[t,'fwd vols'] = np.nan
-        else:
-            capcurves.loc[t,'cap prices'] = cap_vol_to_price(capcurves.loc[t,'flat vols'], curves.loc[t,'swap rates'], curves.loc[:t,'forwards'], curves.loc[:t,'discounts'], dt=dt)
-            capcurves['caplet prices'].loc[t] = capcurves.loc[t,'cap prices'] - capcurves.loc[:tprev,'caplet prices'].sum()
-            wrapper = lambda vol: capcurves['caplet prices'].loc[t] - notional * (1/freq) * blacks_formula(tprev, vol, curves.loc[t,'swap rates'], curves.loc[t,'forwards'], curves.loc[t,'discounts'])
-            capcurves.loc[t,'fwd vols'] = fsolve(wrapper,capcurves.loc[t,'flat vols'])[0]
-
-        tprev = t
-        
-    return capcurves
-
-
-
-def shiftrates_fwdvols(dr,curves):
-    """
-    Calculates the shifted forward volatilities and discounts based on the given shift rate and curves.
+    Shifts the swap rates in the given curves by the specified amount and calculates the modified forward volatilities.
 
     Parameters:
-    dr (float): The shift rate to be applied to the swap rates.
-    curves (DataFrame): The input curves containing swap rates.
+    dr (float): The amount by which to shift the swap rates.
+    curves (DataFrame): The input curves containing swap rates, discounts, and forwards.
 
     Returns:
-    DataFrame: The shifted forward volatilities and discounts.
+    DataFrame: A DataFrame containing the modified forward volatilities and the updated discounts.
     """
+
     curves_mod = curves.copy()
     curves_mod['swap rates'] = curves['swap rates'] + dr
     
@@ -2158,9 +2036,10 @@ def shiftrates_fwdvols(dr,curves):
     sigmas = capcurves['fwd vols']
     sigmas.iloc[0] = sigmas.iloc[1]
     
-    return pd.concat([sigmas, curves_mod['discounts']],axis=1)
+    return pd.concat([sigmas, curves_mod['discounts']], axis=1)
 
 # OPTIONS FUNCS:
+
 def normal_cdf(x):
     """
     Calculate the cumulative distribution function (CDF) of a standard normal distribution.
@@ -2172,7 +2051,6 @@ def normal_cdf(x):
     float: The probability that a random variable from a standard normal distribution is less than or equal to x.
     """
     return (1 + math.erf(x/np.sqrt(2))) / 2
-
 
 def normal_pdf(x):
     """
@@ -2186,7 +2064,6 @@ def normal_pdf(x):
 
     """
     return np.exp(-x**2/2) / np.sqrt(2*np.pi)
-
 
 def bs_normargs(under=None,strike=None,T=None,rf=None,vol=None):
     """
@@ -2261,7 +2138,6 @@ def bs_gamma(under=None,strike=None,T=None,rf=None,vol=None):
     d1 = bs_normargs(under=under,strike=strike,T=T,rf=rf,vol=vol)[0]
     return normal_pdf(d1) / (under * vol * np.sqrt(T))
 
-
 def bs_vega(under=None,strike=None,T=None,rf=None,vol=None):
     """
     Calculate the Vega of a European option using the Black-Scholes formula.
@@ -2301,7 +2177,6 @@ def bs_price(under=None,strike=None,T=None,rf=None,vol=None,option='call'):
     else:
         return under * normal_cdf(d1) - np.exp(-rf*T)*strike * normal_cdf(d2)
 
-
 def bs_rho(under=None,strike=None,T=None,rf=None,vol=None):
     """
     Calculate the rho (sensitivity to interest rate) for a Black-Scholes option.
@@ -2319,8 +2194,6 @@ def bs_rho(under=None,strike=None,T=None,rf=None,vol=None):
 
     d1,d2 = bs_normargs(under=under,strike=strike,T=T,rf=rf,vol=vol)
     return normal_cdf(d2) * strike * T * np.exp(-rf*T)
-
-
 
 def bs_impvol(under=None,strike=None,T=None,rf=None,option='call',opt_price=None,volGuess=.25,showflag=False):
     """
@@ -2346,8 +2219,7 @@ def bs_impvol(under=None,strike=None,T=None,rf=None,option='call',opt_price=None
         return xstar, msg
     else:
         return xstar
-    
-    
+        
 def to_maturity(expiration=None, current_date=None):
     """
     Calculates the time to maturity in years.
@@ -2360,7 +2232,6 @@ def to_maturity(expiration=None, current_date=None):
     float: The time to maturity in years.
     """
     return (pd.to_datetime(expiration) - pd.to_datetime(current_date)).total_seconds()/(24*60*60)/365
-
 
 def filter_stale_quotes(opt_chain):
     """
@@ -2407,8 +2278,6 @@ def clean_options(calls_raw,puts_raw):
     
     return calls, puts
 
-
-
 def treeUnder(start,T,Nt,sigma=None,u=None,d=None):
     """
     Generates a binomial tree for an underlying asset price.
@@ -2443,9 +2312,6 @@ def treeUnder(start,T,Nt,sigma=None,u=None,d=None):
     treeinfo = pd.Series({'u':u,'d':d,'Nt':Nt,'dt':dt}).T
             
     return tree, treeinfo
-
-
-
 
 def treeAsset(funPayoff, treeUnder, treeInfo, Z=None, pstar=None, style='european'):
     """
@@ -2497,7 +2363,6 @@ def treeAsset(funPayoff, treeUnder, treeInfo, Z=None, pstar=None, style='europea
     else:
         return treeV
     
-    
 def bs_delta_to_strike(under,delta,sigma,T,isCall=True,r=0):
     """
     Calculates the strike price given the underlying asset price, delta, volatility, time to expiration,
@@ -2527,6 +2392,7 @@ def bs_delta_to_strike(under,delta,sigma,T,isCall=True,r=0):
     return strike
     
 # RATECURVES FUNCS:
+
 def ratecurve_to_discountcurve(ratecurve, n_compound=None):
     """
     Converts a rate curve to a discount curve.
@@ -2548,10 +2414,6 @@ def ratecurve_to_discountcurve(ratecurve, n_compound=None):
         discountcurve = 1 / (1 + (ratecurve / n_compound))**(n_compound * ratecurve.index)
 
     return discountcurve
-
-
-
-
 
 def ratecurve_to_forwardcurve(ratecurve, n_compound=None, dt=None):
     """
@@ -2582,9 +2444,6 @@ def ratecurve_to_forwardcurve(ratecurve, n_compound=None, dt=None):
 
     return forwardcurve
 
-
-
-
 def discount_to_intrate(discount, maturity, n_compound=None):
     """
     Calculates the interest rate corresponding to a given discount factor.
@@ -2604,8 +2463,6 @@ def discount_to_intrate(discount, maturity, n_compound=None):
         intrate = n_compound * (1/discount**(1/(n_compound * maturity)) - 1)    
         
     return intrate
-
-
 
 def interp_curves(data, dt=None, date=None, interp_method='linear', order=None, extrapolate=True):
     """
@@ -2655,9 +2512,6 @@ def interp_curves(data, dt=None, date=None, interp_method='linear', order=None, 
     
     return curves
 
-
-
-
 def plot_interp_curves(curves, plot_contin=True):
     """
     Plot interpolated curves.
@@ -2672,7 +2526,6 @@ def plot_interp_curves(curves, plot_contin=True):
 
     plt.legend()
     plt.show()
-    
     
 def price_bond(ytm, T, cpn, cpnfreq=2, face=100, accr_frac=None):
     """
@@ -2698,9 +2551,6 @@ def price_bond(ytm, T, cpn, cpnfreq=2, face=100, accr_frac=None):
     N = T * cpnfreq
     price = face * ((cpn_n / ytm_n) * (1-(1+ytm_n)**(-N)) + (1+ytm_n)**(-N)) * (1+ytm_n)**(accr_frac)
     return price
-
-
-
 
 def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
     """
@@ -2732,11 +2582,6 @@ def duration_closed_formula(tau, ytm, cpnrate=None, freq=2):
     
     return duration
 
-
-
-
-
-
 def ytm(price, T, cpn, cpnfreq=2, face=100, accr_frac=None):
     """
     Calculate the Yield to Maturity (YTM) of a bond.
@@ -2755,10 +2600,6 @@ def ytm(price, T, cpn, cpnfreq=2, face=100, accr_frac=None):
     pv_wrapper = lambda y: price - price_bond(y, T, cpn, cpnfreq=cpnfreq, face=face, accr_frac=accr_frac)
     ytm = fsolve(pv_wrapper,.01)
     return ytm
-
-
-
-
 
 def calc_swaprate(discounts,T,freqswap):
     """
@@ -2781,10 +2622,6 @@ def calc_swaprate(discounts,T,freqswap):
 
     swaprate = freqswap * (1 - discounts.loc[T])/discounts.iloc[step-1:periods_swap:step].sum()
     return swaprate
-
-
-
-
 
 def calc_fwdswaprate(discounts, Tfwd, Tswap, freqswap):
     """
@@ -2810,10 +2647,6 @@ def calc_fwdswaprate(discounts, Tfwd, Tswap, freqswap):
     
     fwdswaprate = freqswap * (discounts.loc[Tfwd] - discounts.loc[Tswap]) / discounts.iloc[periods_fwd:periods_swap:step].sum()
     return fwdswaprate
-
-
-
-
 
 def extract_fedpath(curves, feddates, spotfedrate):
     """
@@ -2864,7 +2697,6 @@ def extract_fedpath(curves, feddates, spotfedrate):
                 curves['expected fed rate'].iloc[step] = (n * curves['futures rate'].iloc[step] - m * Eprev) / (n - m)
 
     return curves
-
 
 # VOL SKEW FUNCS:
 
@@ -2946,9 +2778,6 @@ def chi(z, rho):
     """
     return np.log((np.sqrt(1-2*rho*z + z**2) + z - rho) / (1-rho))
 
-
-
-
 def sabr_slim(beta, nu, rho, f, K, T, volATM):
     """
     Calculate the SABR implied volatility using the slim formula.
@@ -2984,9 +2813,6 @@ def sabr_slim(beta, nu, rho, f, K, T, volATM):
         
     return sigmaB
 
-
-
-
 def sabr(beta, nu, rho, alpha, f, K, T):
     """
     Calculate the SABR volatility for a given set of parameters.
@@ -3019,8 +2845,6 @@ def sabr(beta, nu, rho, alpha, f, K, T):
         sigmaB[mask] = sabrATM(beta, nu, rho, alpha, f, K[mask], T)
         
     return sigmaB
-
-
 
 def sabrATM(beta,nu,rho,alpha,f,K,T):
     """
@@ -3105,7 +2929,6 @@ def get_notable_dates(opts, ts, maxdiff=False):
     dtgrid = dtgrid.iloc[:, ::-1].T
 
     return dtgrid
-
         
 def get_strikes_from_vol_moneyness(ISCALL, opts, ts):
     """
@@ -3131,7 +2954,6 @@ def get_strikes_from_vol_moneyness(ISCALL, opts, ts):
             strikes.loc[t,col] = bs_delta_to_strike(under = ts.loc[t,'Future Price'], delta=deltas.loc[col,'delta'], sigma=opts.loc[t,col], T=T, isCall=ISCALL)
             
     return strikes
-
 
 def graph_vol_surface_as_strikes(dtgrid, opts, strikes, ts, label):
     """
@@ -3172,7 +2994,6 @@ def graph_vol_surface_as_strikes(dtgrid, opts, strikes, ts, label):
                 ax[j].set_xlim(xmin=0, xmax=0.08)
 
             plt.tight_layout()
-
             
 def sabr_volpaths(LOADFILE, idSHEET, ISCALL, BETA, TARG_T, doSLIM=False):
     """
@@ -3324,9 +3145,6 @@ def sabr_volpaths(LOADFILE, idSHEET, ISCALL, BETA, TARG_T, doSLIM=False):
     output['params'] = paramtab
     
     return output        
-
-
-
 
 ## SELF CREATED FUNCTIONS: 
 
