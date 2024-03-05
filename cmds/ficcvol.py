@@ -113,7 +113,23 @@ def price_caplet(T_rateset,vol,strike,fwd,discount,freq=4,notional=100):
     return price
 
 
-def flat_to_forward_vol_rev(flatvols, strikes, fwds, discounts, freq=None, notional=100, returnCaplets=False):
+
+# wrapper for better version of the function
+def flat_to_forward_vol(curves, freq=None, notional=100):
+    capcurves = flat_to_forward_vol_rev(
+        curves['flat vols'],
+        curves['swap rates'],
+        curves['forwards'],
+        curves['discounts'],
+        freq=4,
+        returnCaplets=False)
+
+    return capcurves
+    
+    
+    
+
+def flat_to_forward_vol_rev(flatvols,strikes,fwds, discounts, freq=None, notional=100, returnCaplets=False):
     """
     Converts flat volatilities to forward volatilities using cap pricing.
 
@@ -125,12 +141,9 @@ def flat_to_forward_vol_rev(flatvols, strikes, fwds, discounts, freq=None, notio
         freq (int, optional): Frequency of the time grid. Defaults to None.
         notional (float, optional): Notional amount. Defaults to 100.
         returnCaplets (bool, optional): Flag indicating whether to return caplets. Defaults to False.
-
-    Returns:
-        pd.DataFrame or tuple: DataFrame containing forward volatilities and cap prices. If returnCaplets is True, also returns a DataFrame of caplets.
     """
-    # TODO: allow for timegrid to differ from cap timing
-    if freq != 4:
+    #TODO: allow for timegrid to differ from cap timing
+    if freq!=4:
         display('Warning: freq parameter controls timegrid and cap timing.')
         
     dt = 1 / freq
@@ -173,19 +186,9 @@ def flat_to_forward_vol_rev(flatvols, strikes, fwds, discounts, freq=None, notio
     
     
 
-def flat_to_forward_vol(curves, freq=None, notional=100):
-    """
-    Converts flat volatility to forward volatility using caplet prices and Black's formula.
-
-    Args:
-        curves (DataFrame): The input DataFrame containing the necessary curves data.
-        freq (int, optional): The frequency of the caplets. Defaults to None.
-        notional (float, optional): The notional amount. Defaults to 100.
-
-    Returns:
-        DataFrame: The DataFrame containing the forward volatilities.
-
-    """
+# old code for pedagogical instruction in 2023--pending deletion
+def flat_to_forward_vol_old(curves, freq=None, notional=100):
+    
     dt = curves.index[1] - curves.index[0]
     if freq is None:
         freq = int(1/dt)
