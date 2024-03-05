@@ -58,6 +58,21 @@ def price_caplet(T_rateset,vol,strike,fwd,discount,freq=4,notional=100):
 
 
 
+# wrapper for better version of the function
+def flat_to_forward_vol(curves, freq=None, notional=100):
+    capcurves = flat_to_forward_vol_rev(
+        curves['flat vols'],
+        curves['swap rates'],
+        curves['forwards'],
+        curves['discounts'],
+        freq=4,
+        returnCaplets=False)
+
+    return capcurves
+    
+    
+    
+
 def flat_to_forward_vol_rev(flatvols,strikes,fwds, discounts, freq=None, notional=100, returnCaplets=False):
 #TODO: allow for timegrid to differ from cap timing
     if freq!=4:
@@ -103,7 +118,8 @@ def flat_to_forward_vol_rev(flatvols,strikes,fwds, discounts, freq=None, notiona
     
     
 
-def flat_to_forward_vol(curves, freq=None, notional=100):
+# old code for pedagogical instruction in 2023--pending deletion
+def flat_to_forward_vol_old(curves, freq=None, notional=100):
     
     dt = curves.index[1] - curves.index[0]
     if freq is None:
